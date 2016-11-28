@@ -1,29 +1,29 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> ii;
+typedef pair<int, string> is;
 typedef vector< pair<int, string> > vii;
 map<string, int> string_to_int;
 vector< vii > grafo(4005);
-bool visitados[4005];
+bool visitados[4005][4005];
 int indice;
 
 int dijkstra(int origem, int destino)
 {
   memset(visitados, false, sizeof visitados);
 
-  priority_queue< pair<ii, string>, vector< pair<ii, string> >, greater< pair<ii, string> > >pq;
-  pq.push({{0, origem}, "l"});
+  priority_queue< pair<int, is>, vector< pair<int, is> >, greater< pair<int, is> > >pq;
+  //priority_queue< pair<ii, string>, vector< pair<ii, string> >, greater< pair<ii, string> > >pq;
+  pq.push({0, {origem, "A"}});
 
   while(!pq.empty())
   {
-    int v = pq.top().first.second;
-    int peso = pq.top().first.first;
-    string anterior = pq.top().second;
+    int v = pq.top().second.first;
+    int peso = pq.top().first;
+    string anterior = pq.top().second.second;
     pq.pop();
 
-
-    visitados[v] = true;
+    visitados[v][string_to_int[anterior]] = true;
 
     if (v == destino)
       return peso;
@@ -33,15 +33,10 @@ int dijkstra(int origem, int destino)
       int u = grafo[v][i].first;
       string str = grafo[v][i].second;
 
-      if (v == origem)
+      if (!visitados[u][string_to_int[str]] && anterior[0] != str[0])
       {
-        visitados[u] = true;
-        pq.push({{peso+str.size(), u}, str});
-      }
-      else if (!visitados[u] && anterior[0] != str[0])
-      {
-        visitados[u] = true;
-        pq.push({{peso+str.size(), u}, str});
+        visitados[u][string_to_int[str]] = true;
+        pq.push({peso+str.size(), {u, str}});
       }
     }
   }
@@ -51,7 +46,7 @@ int dijkstra(int origem, int destino)
 
 void verifica(string str)
 {
-  if (!string_to_int.count(str))
+  if (string_to_int.find(str) == string_to_int.end())
   {
     string_to_int[str] = indice;
     indice++;
@@ -75,9 +70,6 @@ main()
 
     indice = 0;
 
-    verifica(o);
-    verifica(d);
-
     for (int i = 0; i < n; i++)
     {
       cin.ignore();
@@ -85,16 +77,23 @@ main()
 
       verifica(i1);
       verifica(i2);
+      verifica(p);
 
       grafo[string_to_int[i1]].push_back({string_to_int[i2], p});
       grafo[string_to_int[i2]].push_back({string_to_int[i1], p});
     }
 
-    int res = dijkstra(string_to_int[o], string_to_int[d]);
+    int res = -1;
 
-    if (res == -1)
+    if (string_to_int.find(o) == string_to_int.end() || string_to_int.find(d) == string_to_int.end() || o == d)
       cout << "impossivel" << endl;
     else
-      cout << res << endl;
+    {
+      res = dijkstra(string_to_int[o], string_to_int[d]);
+      if (res == -1)
+        cout << "impossivel" << endl;
+      else
+        cout << res << endl;
+    }
   }
 }
