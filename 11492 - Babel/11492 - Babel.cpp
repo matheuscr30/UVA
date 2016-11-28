@@ -13,7 +13,6 @@ int dijkstra(int origem, int destino)
   memset(visitados, false, sizeof visitados);
 
   priority_queue< pair<int, is>, vector< pair<int, is> >, greater< pair<int, is> > >pq;
-  //priority_queue< pair<ii, string>, vector< pair<ii, string> >, greater< pair<ii, string> > >pq;
   pq.push({0, {origem, "A"}});
 
   while(!pq.empty())
