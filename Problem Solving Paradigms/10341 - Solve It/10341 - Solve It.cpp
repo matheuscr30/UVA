@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define EPS 1e-5
+#define EPS 1e4
 using namespace std;
 typedef long long int ll;
 double p, q, r, s, t, u;
@@ -8,7 +8,7 @@ bool solve(double x)
 {
   double conta = p*exp(-x) + q*sin(x) + r*cos(x) + s*tan(x) + t*x*x + u;
   cout << conta << endl;
-  return (fabs(conta) >=  EPS) ? true : false;
+  return (fabs(conta) <=  EPS) ? true : false;
 }
 
 main()
