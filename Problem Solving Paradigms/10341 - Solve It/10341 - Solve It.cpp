@@ -1,38 +1,41 @@
 #include <bits/stdc++.h>
-#define EPS 1e4
+#define EPS 1e-6
+#define endl '\n'
 using namespace std;
-typedef long long int ll;
 double p, q, r, s, t, u;
 
-bool solve(double x)
-{
-  double conta = p*exp(-x) + q*sin(x) + r*cos(x) + s*tan(x) + t*x*x + u;
-  cout << conta << endl;
-  return (fabs(conta) <=  EPS) ? true : false;
+double solve(double x){
+  return p*exp(-x) + q*sin(x) + r*cos(x) + s*tan(x) + t*x*x + u;
 }
 
 main()
 {
+  //p = r = u = 1;
+  //q = s = t = -1;
+  //cout << solve(0.500) << endl;
+  //cout << solve(0.600) << endl;
+  //cout << EPS << endl;
   while(cin >> p >> q >> r >> s >> t >> u)
   {
+    double lo = 0.0, hi = 1.0, mid;
     double ans = -1;
-    //0cout << solve(0.7554) << endl;
-    double hi = 1.0000, lo = 0.0000, mid;
-    while(fabs(hi - lo) > EPS)
-    {
-      mid = (lo + hi )/2.0;
 
-      if (solve(mid))
-      {
-        ans = mid;
+    for (int i = 0; i < 100; i++)
+    {
+      mid = (lo+hi)/2;
+
+      if(solve(mid) > 0.0){
+        lo = mid;
+      }
+      else{
         hi = mid;
       }
-      else lo = mid;
     }
 
-    if (ans == -1)
-      cout << "No solution" << endl;
+
+    if(fabs(solve(mid)) <= EPS)
+      cout << fixed << setprecision(4) << mid << endl;
     else
-      cout << ans << endl;
+      cout << "No solution" << endl;
   }
 }

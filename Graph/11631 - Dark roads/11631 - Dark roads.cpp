@@ -2,6 +2,7 @@
 
 using namespace std;
 
+
 int parent[200005], total =0;
 vector< pair<int , pair<int, int> > >grafo, MST;
 vector< pair<int , pair<int, int> > >::iterator it;
@@ -64,4 +65,3 @@ int main()
     }
     return 0;
 }
-
