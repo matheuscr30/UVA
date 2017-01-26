@@ -1,29 +1,24 @@
 #include <bits/stdc++.h>
 #define endl '\n'
 using namespace std;
-typedef long long int ll;
-ll buy, n, first, dp[105][10005][105];
-bool flag;
+typedef long long int ll ;
+ll n, buy, dp[105][20005];
 vector<ll>vet;
 
-ll solve(ll current, ll sum, ll cont)
+ll solve(ll current, ll sum)
 {
-	if (sum >= buy){
-		first = min(first, cont);
-		return sum;
-	}
-		
-	if (current == n)
+	if (sum == 0)
+		return 0;
+	if (current == n || sum < 0)
 		return INT_MAX;
-		 
-	if (dp[current][sum][cont] != -1)
-		return dp[current][sum][cont];
-		
-	ll ans = solve(current+1, sum, cont);
 	
-	ans = min(ans, solve(current+1, sum+vet[current], cont+1));
+	ll &re = dp[current][sum];
+	if (re != -1)
+		return re;
 		
-	return dp[current][sum][cont] = ans;
+	ll ans = min(solve(current+1, sum), solve(current+1, sum-vet[current]) + 1);
+		
+	return re = ans;
 }
 
 main()
@@ -33,17 +28,30 @@ main()
 	
 	while(t--)
 	{
+		vet.clear();
 		cin >> buy;
 		cin >> n;
 		
-		for(ll i = 0 ; i < n; i++){
+		for (ll i = 0 ; i < n; i++){
 			cin >> num;
 			vet.push_back(num);
 		}
-		//sort(vet.begin(), vet.end());
-		memset(dp, -1, sizeof dp);
-		first = 10000;
-		ll res = solve(0, 0, 0);
-		cout << res << " " << first << endl;
+		
+		memset(dp, -1, sizeof(dp));
+		
+		ll result, res;
+		for(ll i = buy; i <= buy + 10000; i++){
+			res = solve(0, i);
+			
+			//	cout << res << endl;
+			
+			if (res != INT_MAX)
+			{
+				result = i;
+				break;
+			}
+		}
+		
+		cout << result << " " << res << endl;
 	}
 }
