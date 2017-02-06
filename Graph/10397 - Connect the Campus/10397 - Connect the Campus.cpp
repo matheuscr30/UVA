@@ -5,18 +5,16 @@
 using namespace std;
 typedef long long int ll;
 typedef pair<ll, ll> ii;
-vector< ii >points;
 vector< pair<double, ii> >edges;
-ll parent[505], s, p;
-double res;
+vector< ii > points;
+ll parent[755], n;
 
 void reset()
 {
-	for(ll i = 0; i <= p; i++)
-		parent[i] = i;
-	
-	points.clear();
 	edges.clear();
+	points.clear();
+	for(ll i = 0 ; i <= n; i++)
+		parent[i] = i;
 }
 
 ll findset(ll x)
@@ -32,10 +30,10 @@ void UNION(ll x, ll y)
     parent[x] = parent[y];
 }
 
-void kruskal()
+double kruskal()
 {
-    ll pu, pv, cont = 0;
-    res = 0;
+    ll pu, pv;
+    double sum = 0;
 
     for (ll i = 0; i < edges.size(); i++)
     {
@@ -44,42 +42,56 @@ void kruskal()
 
         if (pu != pv)
         {
-			if(cont == p-s)
-				break;
-			res = max(res, edges[i].F);
-			
+			sum += edges[i].F; 
             UNION(pu, pv);
-            cont++;
         }
     }
+    
+    return sum;
 }
 
 main()
 {
-	ll n, x, y;
-	cin >> n;
-	
-	while(n--)
+	ll x, y, m, u, v;
+	while(cin >> n)
 	{
-		cin >> s >> p;
 		reset();
 		
-		for(ll i = 0 ; i < p; i++)
+		for(ll i = 0; i < n; i++)
 		{
 			cin >> x >> y;
 			points.push_back( {x, y} );
 		}
 		
-		for(ll i = 0 ; i < p; i++)
-			for(ll j = i+1; j < p; j++)
+		cin >> m;
+		
+		for(ll i = 0; i < m; i++)
+		{
+			cin >> u >> v;
+			
+			ll x1 = points[u-1].F, y1 = points[u-1].S;
+			ll x2 = points[v-1].F, y2 = points[v-1].S;
+			
+			double dist = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+			edges.push_back( {dist, {u, v} } );
+		}
+		
+		ll ex = kruskal();
+		edges.clear();
+		
+		for(ll i = 1; i <= n; i++)
+			for(ll j = i+1; j <= n; j++)
 			{
-				double dist = sqrt( pow(points[i].F - points[j].F, 2) + pow(points[i].S - points[j].S, 2));
+				ll x1 = points[i-1].F, y1 = points[i-1].S;
+				ll x2 = points[j-1].F, y2 = points[j-1].S;
+			
+				double dist = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 				edges.push_back( {dist, {i, j} } );
 			}
 			
 		sort(edges.begin(), edges.end());
+		double res = kruskal();
 		
-		kruskal();
 		cout << fixed << setprecision(2) << res << endl;
 	}
 }
