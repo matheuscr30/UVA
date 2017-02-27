@@ -1,69 +1,88 @@
 #include <bits/stdc++.h>
-using namespace std ;
+#define endl '\n'
+#define F first
+#define S second
+using namespace std;
+typedef long long int ll;
+unordered_map<string, ll>has;
+vector< pair<ll, ll> >vet;
+vector< vector<pair<ll, ll> > >distances(1005);
+ll n;
+double dp[105][55];
 
-#define MAXV 55
-int res [MAXV][MAXV] ;
-int cap [MAXV][MAXV] ;
-int s , y , mf ,t , f , N , M ;
-bool visited [MAXV] ;
-vector <int> p ;
-
-void augment ( int v ,int minedge){ if( p[v] == -1){ f=  minedge;  return ;}
-      else{ augment(p[v] , min(minedge,res[p[v]][v]) );
-          res[p[v]][v] -= f;
-          res[v][p[v]] += f;
-          
-       }
+ll reset()
+{
+	has.clear();
+	vet.clear();
+	
+	for(ll i = 0; i <= n; i++)
+		for(ll j = 0 ; j <= 52; j++)
+			dp[i][j] = -1;
+	
+	for(ll i = 0; i <= n; i++)
+		distances[i].clear();
+	return 0;
 }
 
-void maxflow(){
- f =mf = 0 ;
- while(1){
-  p.assign(N+1,-1);
-  bitset<MAXV> vis ; queue<int> q ; vis.set(s); q.push(s);
-  while(!q.empty()){ int u = q.front(); q.pop(); if( u == t)break;
-               for( int i = 1 ; i<= N ; i++)
-               if( !vis.test(i) && res[u][i] > 0){
-                 q.push(i) ; vis.set(i); p[i]=u;
-               }
-  }
-  
-  augment(t,1e9 );
-  if( f== 0 || f == 1e9){ break ;}
-  mf += f;
- }
+double dist(ll x1, ll y1, ll x2, ll y2){
+	return sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
 }
 
-void dfs( int u){
- visited[u] = true ;
- for( int i = 1 ; i <= N ; i++)
- if( res[u][i] > 0 && !visited[i])
-    dfs(i) ;
-}
+ll solve(ll current, ll opt)
+{	
+	if(opt == distances[vet[current].F].size())
+		return solve(current+1, 0);
+	if(current == vet.size())
+		return 0;
+	
+	double &res = dp[current][opt];
+	if(res != -1)
+		return res;
+		
+	double ans = INT_MAX;
+	
+	for(ll i = 0; i < distances[vet[current].S].size(); i++)
+	{
+		double d = dist(distances[vet[current].F][opt].F, distances[vet[current].F][opt].S,
+						distances[vet[current].S][i].F, distances[vet[current].S][i].S);
+						
+		ans = min(ans, solve(current+1, 0) + d);
+	}
+		
+	return res = ans;
+} 
 
-int main(){
- int i , j, k , l;
- while ( scanf("%d %d",&N ,&M) ){
-  if( N == 0 && M == 0)
-  break;
-         memset ( cap, 0, sizeof cap) ; memset ( res , 0 ,sizeof res);
-         while( M--){
-          scanf("%d %d %d",&i,&j,&k);
-          res[i][j] = res[j][i] = k;
-          cap[i][j] = cap[j][i] = k ;
-         }
-        s = 1 ; t = 2 ;
-        maxflow();
-        memset ( visited, false,sizeof visited); 
-        dfs(s);
-        cout << mf << endl;
-        for (  i = 1 ; i <= N && mf ; i++)
-        for ( j = 1 ; j <= N && mf; j++)
-        if( visited[i] && !visited[j] && cap[i][j] > 0 ){
-         printf("%d %d\n",i , j) ; mf -= cap[i][j] ;
-        }
-       putchar('\n');
-  }    
-
-  return 0 ;
+main()
+{
+	string s1, s2;
+	ll quan, num, indice, x, y;
+	while(cin >> n && n)
+	{
+		indice = reset();
+		
+		for(ll i = 0; i < n; i++)
+		{
+			cin.ignore();
+			cin >> s1 >> quan;
+			
+			if(!has.count(s1))
+				has[s1] = indice++;
+				
+			for(ll j = 0 ; j < quan; j++)
+			{
+				cin >> x >> y;
+				distances[has[s1]].push_back( {x, y} );
+			}
+		}
+		
+		for(ll i = 0; i < n-1; i++)
+		{
+			cin.ignore();
+			cin >> s1 >> s2;
+			vet.push_back( {has[s1], has[s2]} );
+		}
+		
+		double res = solve(0, 0);
+		cout << fixed << setprecision(1) << res << endl;
+	}
 }
