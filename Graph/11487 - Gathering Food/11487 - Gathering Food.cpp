@@ -20,7 +20,7 @@ inline ll solve(ll x, ll y, ll food, ll quan)
 		return 1LL;
 	
 	if(quan > distances[food])
-		return 0LL
+		return 0LL;
 		
 	char letra = (char)(food + 'A');
 	if(graph[x][y] == letra)
