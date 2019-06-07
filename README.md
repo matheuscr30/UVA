@@ -1,4 +1,4 @@
-<a href="https://uva.onlinejudge.org" target="_blank"><img src="https://github.com/jcbages/uva-online-judge-solutions/blob/master/logo.png" alt="UVa Online Judge"></a>
+<a href="https://uva.onlinejudge.org" target="_blank"><img src="https://github.com/matheuscr30/UVA/blob/master/logo.png" alt="UVa Online Judge"></a>
 # UVa Online Judge Solutions
 
 :trophy: Solutions to problems from the UVa Online Judge :trophy:
